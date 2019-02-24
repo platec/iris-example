@@ -1,14 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"github.com/Unknwon/goconfig"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
-	"github.com/Unknwon/goconfig"
-	"log"
 	"time"
 )
 
-func initApp () *iris.Application {
+func initApp() *iris.Application {
 	app := iris.New()
 
 	app.RegisterView(iris.HTML("./templates", ".html"))
@@ -40,7 +40,7 @@ func initApp () *iris.Application {
 		username := ctx.FormValue("username")
 		password := ctx.FormValue("password")
 		if username == "test" && password == "12345678" {
-			ctx.SetCookieKV("sid", username, context.CookieExpires(time.Duration(2) * time.Minute))
+			ctx.SetCookieKV("sid", username, context.CookieExpires(time.Duration(2)*time.Minute))
 			ctx.Redirect("/")
 		} else {
 			ctx.Redirect("/login")
@@ -53,7 +53,7 @@ func main() {
 	app := initApp()
 	cfg, err := goconfig.LoadConfigFile("config.ini")
 	if err != nil {
-		log.Println("读取配置文件失败[conf.ini]")
+		fmt.Println("读取配置文件失败")
 		return
 	}
 	port, _ := cfg.GetValue(goconfig.DEFAULT_SECTION, "port")
