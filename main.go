@@ -3,10 +3,12 @@ package main
 import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
+	"github.com/Unknwon/goconfig"
+	"log"
 	"time"
 )
 
-func main() {
+func initApp () *iris.Application {
 	app := iris.New()
 
 	app.RegisterView(iris.HTML("./templates", ".html"))
@@ -44,6 +46,17 @@ func main() {
 			ctx.Redirect("/login")
 		}
 	})
+	return app
+}
 
-	app.Run(iris.Addr(":8080"))
+func main() {
+	app := initApp()
+	cfg, err := goconfig.LoadConfigFile("config.ini")
+	if err != nil {
+		log.Println("读取配置文件失败[conf.ini]")
+		return
+	}
+	port, _ := cfg.GetValue(goconfig.DEFAULT_SECTION, "port")
+	println(port, "port")
+	app.Run(iris.Addr(":" + port))
 }
