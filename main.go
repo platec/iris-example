@@ -1,40 +1,27 @@
 package main
 
 import (
-	"fmt"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/basicauth"
-	"net/http"
+	"github.com/kataras/iris/context"
 	"time"
 )
 
 func main() {
 	app := iris.New()
 
-	authConfig := basicauth.Config{
-		Users:   map[string]string{"test": "12345678"},
-		Realm:   "Authorization Required", // defaults to "Authorization Required"
-		Expires: time.Duration(2) * time.Minute,
-	}
-
-	authentication := basicauth.New(authConfig)
-
-	needAuth := app.Party("/", authentication)
-	{
-		needAuth.Get("/", func(ctx iris.Context) {
-			ctx.Gzip(true)
-			ctx.View("index.html")
-		})
-	}
-
 	app.RegisterView(iris.HTML("./templates", ".html"))
 	app.StaticWeb("/static", "./static")
 
 	// 主页
-	//app.Get("/", func(ctx iris.Context) {
-	//	ctx.Gzip(true)
-	//	ctx.View("index.html")
-	//})
+	app.Get("/", func(ctx iris.Context) {
+		sid := ctx.GetCookie("sid")
+		if sid != "" {
+			ctx.Gzip(true)
+			ctx.View("index.html")
+		} else {
+			ctx.Redirect("/login")
+		}
+	})
 
 	// 登录页
 	app.Get("/login", func(ctx iris.Context) {
@@ -43,23 +30,15 @@ func main() {
 	})
 
 	app.Post("/login", func(ctx iris.Context) {
-		mobile := ctx.FormValue("mobile")
+		username := ctx.FormValue("username")
 		password := ctx.FormValue("password")
-		fmt.Println(mobile, password)
-
-		cookie := http.Cookie{"sid", "f"}
-		ctx.SetCookie()
-
-		ctx.JSON(iris.Map{
-			"status": "ok",
-			"message": "",
-		})
+		if username == "test" && password == "12345678" {
+			ctx.SetCookieKV("sid", username, context.CookieExpires(time.Duration(2) * time.Minute))
+			ctx.Redirect("/")
+		} else {
+			ctx.Redirect("/login")
+		}
 	})
 
-	app.Get("/ping", func(ctx iris.Context) {
-		ctx.JSON(iris.Map{
-			"message": "pong",
-		})
-	})
 	app.Run(iris.Addr(":8080"))
 }
