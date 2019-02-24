@@ -29,6 +29,11 @@ func main() {
 		ctx.View("login.html")
 	})
 
+	app.Post("/logout", func(ctx iris.Context) {
+		ctx.RemoveCookie("sid")
+		ctx.Redirect("/login")
+	})
+
 	app.Post("/login", func(ctx iris.Context) {
 		username := ctx.FormValue("username")
 		password := ctx.FormValue("password")
