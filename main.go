@@ -50,13 +50,13 @@ func initApp() *iris.Application {
 }
 
 func main() {
-	app := initApp()
 	cfg, err := goconfig.LoadConfigFile("config.ini")
 	if err != nil {
 		fmt.Println("读取配置文件失败")
 		return
 	}
 	port, _ := cfg.GetValue(goconfig.DEFAULT_SECTION, "port")
-	println(port, "port")
+
+	app := initApp()
 	app.Run(iris.Addr(":" + port))
 }
