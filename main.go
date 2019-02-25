@@ -11,9 +11,10 @@ import (
 )
 
 var (
-	sess           = sessions.New(sessions.Config{Cookie: "sessionid", AllowReclaim: true, Expires: time.Duration(time.Minute * 2)})
 	usernameStored string
 	passwordStored string
+	duration int64
+	sess *sessions.Sessions
 )
 
 func SHA256Str(src string) string {
@@ -21,6 +22,11 @@ func SHA256Str(src string) string {
 	h.Write([]byte(src))
 	return hex.EncodeToString(h.Sum(nil))
 }
+
+func control(ctx iris.Context) {
+	// TODO
+}
+
 
 func initApp() *iris.Application {
 	app := iris.New()
@@ -50,6 +56,8 @@ func initApp() *iris.Application {
 		ctx.Redirect("/login")
 	})
 
+	app.Post("/control", control)
+
 	app.Post("/login", func(ctx iris.Context) {
 		username := ctx.FormValue("username")
 		password := ctx.FormValue("password")
@@ -73,6 +81,9 @@ func main() {
 	port, _ := cfg.GetValue(goconfig.DEFAULT_SECTION, "port")
 	usernameStored, _ = cfg.GetValue(goconfig.DEFAULT_SECTION, "username")
 	passwordStored, _ = cfg.GetValue(goconfig.DEFAULT_SECTION, "password")
+	duration, _ = cfg.Int64(goconfig.DEFAULT_SECTION,"duration")
+
+	sess = sessions.New(sessions.Config{Cookie: "sessionid", AllowReclaim: true, Expires: time.Duration(time.Minute * time.Duration(duration))})
 
 	app := initApp()
 	app.Run(iris.Addr(":" + port))

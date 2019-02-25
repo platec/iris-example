@@ -8,8 +8,48 @@
     <title>登录</title>
     <link href="static/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/css/signin.css" rel="stylesheet">
-    <script src="static/js/jquery.min.js"></script>
-    <script src="static/js/cryptico.min.js"></script>
+    <style>
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #eee;
+        }
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+        .form-signin .form-control {
+            position: relative;
+            height: auto;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,6 +66,8 @@
         </form>
 
     </div>
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/cryptico.min.js"></script>
     <script>
         $(function () {
             $('#loginBtn').on('click', function () {
@@ -49,7 +91,7 @@
                         }
                     });
                 }
-            })
+            });
         });
     </script>
 </body>
