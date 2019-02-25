@@ -2,14 +2,13 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>登录</title>
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/css/signin.css" rel="stylesheet">
-    <style>
-        body {
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登录</title>
+  <link href="static/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
             padding-top: 40px;
             padding-bottom: 40px;
             background-color: #eee;
@@ -53,47 +52,61 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="alert alert-danger" hidden id="message" role="alert">
-        </div>
-        <form class="form-signin">
-            <label for="username" class="sr-only">用户名</label>
-            <input type="text" id="usename" class="form-control" placeholder="用户名" autocomplete="off" required
-                autofocus>
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" class="form-control" placeholder="密码" required>
-            <button id="loginBtn" class="btn btn-lg btn-primary btn-block" type="button">登录</button>
-        </form>
+  <div class="container">
+    <form class="form-signin">
+      <label for="username" class="sr-only">用户名</label>
+      <input type="text" id="usename" class="form-control" placeholder="用户名" autocomplete="off" required autofocus>
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" id="password" class="form-control" placeholder="密码" required>
+      <button id="loginBtn" class="btn btn-lg btn-primary btn-block" type="button">登录</button>
+    </form>
 
-    </div>
-    <script src="static/js/jquery.min.js"></script>
-    <script src="static/js/cryptico.min.js"></script>
-    <script>
-        $(function () {
-            $('#loginBtn').on('click', function () {
-                var username = $('#usename').val();
-                var password = $('#password').val();
-                if (username && password) {
-                    $.ajax({
-                        url: 'login',
-                        method: 'post',
-                        data: {
-                            username: username,
-                            password: cryptico.publicKeyString(cryptico.generateRSAKey(password, 512))
-                        }
-                    }).then(function (data) {
-                        if (data.status === 'ok') {
-                            $('#message').text('').hide();
-                            console.log(data);
-                            window.location.href = '/';
-                        } else {
-                            $('#message').text(data.message).show();
-                        }
-                    });
+  </div>
+  <script src="static/js/jquery.min.js"></script>
+  <script src="static/js/cryptico.min.js"></script>
+  <script src="static/js/modal.js"></script>
+  <script src="static/js/bootbox.min.js"></script>
+  <script>
+    $(function () {
+      $('#loginBtn').on('click', function () {
+        var username = $('#usename').val();
+        var password = $('#password').val();
+        if (username && password) {
+          $.ajax({
+            url: 'login',
+            method: 'post',
+            data: {
+              username: username,
+              password: cryptico.publicKeyString(cryptico.generateRSAKey(password,
+                512))
+            }
+          }).then(function (data) {
+            if (data.status === 'ok') {
+              window.location.href = '/';
+            } else {
+              bootbox.dialog({
+                message: data.message,
+                buttons: {
+                  confirm: {
+                    label: '确定'
+                  }
                 }
-            });
-        });
-    </script>
+              });
+            }
+          });
+        } else {
+          bootbox.dialog({
+            message: '用户名密码不能为空',
+            buttons: {
+              confirm: {
+                label: '确定'
+              }
+            }
+          });
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>

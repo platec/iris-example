@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <link href="static/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
             padding-top: 70px;
             padding-bottom: 30px;
         }
@@ -26,30 +27,50 @@
             width: auto;
         }
     </style>
-    <title>首页</title>
+  <title>首页</title>
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">集控</a>
-            </div>
-        </div>
-    </nav>
 
-    <div class="container" role="main">
-        <button type="button" class="btn btn-lg btn-primary col-lg-2 col-xs-10 col-lg-offset-5 col-xs-offset-1" id="control">控制</button>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">集控</a>
+      </div>
     </div>
-    <script src="static/js/jquery.min.js"></script>
-    <script>
-        $(function () {
-            $('#control').on('click', function () {
-               $.ajax({
-                   url: '/control',
-                   method: 'post'
-               });
-            });
+  </nav>
+
+  <div class="container" role="main">
+    <button type="button" class="btn btn-lg btn-primary col-lg-2 col-xs-10 col-lg-offset-5 col-xs-offset-1" id="control">控制</button>
+  </div>
+  <script src="static/js/jquery.min.js"></script>
+  <script src="static/js/modal.js"></script>
+  <script src="static/js/bootbox.min.js"></script>
+  <script>
+    $(function () {
+      $('#control').on('click', function () {
+        bootbox.confirm({
+          title: '提示',
+          message: '确定控制吗?',
+          buttons: {
+            cancel: {
+              label: '取消'
+            },
+            confirm: {
+              label: '确定'
+            }
+          },
+          callback: function (result) {
+            if (result) {
+              $.ajax({
+                url: '/control',
+                method: 'post'
+              });
+            }
+          }
         });
-    </script>
+      })
+    })
+  </script>
 </body>
+
 </html>
