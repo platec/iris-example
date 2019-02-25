@@ -1,17 +1,17 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"github.com/Unknwon/goconfig"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
 	"time"
-	"crypto/sha256"
-	"encoding/hex"
 )
 
 var (
-	sess = sessions.New(sessions.Config{Cookie: "sessionid", AllowReclaim: true, Expires: time.Duration(time.Minute * 2)})
+	sess           = sessions.New(sessions.Config{Cookie: "sessionid", AllowReclaim: true, Expires: time.Duration(time.Minute * 2)})
 	usernameStored string
 	passwordStored string
 )
@@ -21,7 +21,6 @@ func SHA256Str(src string) string {
 	h.Write([]byte(src))
 	return hex.EncodeToString(h.Sum(nil))
 }
-
 
 func initApp() *iris.Application {
 	app := iris.New()
