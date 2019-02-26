@@ -27,6 +27,14 @@ func control(ctx iris.Context) {
 	// TODO
 }
 
+func loginRequired(ctx iris.Context) {
+	if auth, _ := sess.Start(ctx).GetBoolean("authenticated"); !auth {
+		ctx.Redirect("/login")
+	} else {
+		ctx.Next()
+	}
+}
+
 
 func initApp() *iris.Application {
 	app := iris.New()
@@ -37,11 +45,10 @@ func initApp() *iris.Application {
 	// 主页
 	app.Get("/", func(ctx iris.Context) {
 		if auth, _ := sess.Start(ctx).GetBoolean("authenticated"); !auth {
-			//ctx.StatusCode(iris.StatusForbidden)
 			ctx.Redirect("/login")
-			return
+		} else {
+			ctx.View("index.html")
 		}
-		ctx.View("index.html")
 	})
 
 	// 登录页
@@ -56,7 +63,9 @@ func initApp() *iris.Application {
 		ctx.Redirect("/login")
 	})
 
-	app.Post("/control", control)
+	r := app.Party("/api", loginRequired)
+
+	r.Post("/control", control)
 
 	app.Post("/login", func(ctx iris.Context) {
 		username := ctx.FormValue("username")
