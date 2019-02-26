@@ -7,6 +7,7 @@ import (
 	"github.com/Unknwon/goconfig"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
+	"os"
 	"time"
 )
 
@@ -25,6 +26,7 @@ func SHA256Str(src string) string {
 
 func control(ctx iris.Context) {
 	// TODO
+	ctx.Application().Logger().Infof("控制操作来自 %s %s",  ctx.RemoteAddr(), ctx.GetHeader("User-Agent"))
 }
 
 func loginRequired(ctx iris.Context) {
@@ -34,7 +36,6 @@ func loginRequired(ctx iris.Context) {
 		ctx.Next()
 	}
 }
-
 
 func initApp() *iris.Application {
 	app := iris.New()
@@ -81,6 +82,14 @@ func initApp() *iris.Application {
 	return app
 }
 
+func newLogFile() *os.File {
+	f, err := os.OpenFile("history.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	return f
+}
+
 func main() {
 	cfg, err := goconfig.LoadConfigFile("config.ini")
 	if err != nil {
@@ -95,6 +104,9 @@ func main() {
 
 	sess = sessions.New(sessions.Config{Cookie: "sessionid", AllowReclaim: true, Expires: time.Duration(time.Minute * time.Duration(duration))})
 
+	f := newLogFile()
+	defer f.Close()
 	app := initApp()
+	app.Logger().SetOutput(newLogFile())
 	app.Run(iris.Addr(ip + ":" + port))
 }
