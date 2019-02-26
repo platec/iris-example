@@ -88,6 +88,7 @@ func main() {
 		return
 	}
 	port, _ := cfg.GetValue(goconfig.DEFAULT_SECTION, "port")
+	ip, _ := cfg.GetValue(goconfig.DEFAULT_SECTION, "ip")
 	usernameStored, _ = cfg.GetValue(goconfig.DEFAULT_SECTION, "username")
 	passwordStored, _ = cfg.GetValue(goconfig.DEFAULT_SECTION, "password")
 	duration, _ = cfg.Int64(goconfig.DEFAULT_SECTION,"duration")
@@ -95,5 +96,5 @@ func main() {
 	sess = sessions.New(sessions.Config{Cookie: "sessionid", AllowReclaim: true, Expires: time.Duration(time.Minute * time.Duration(duration))})
 
 	app := initApp()
-	app.Run(iris.Addr(":" + port))
+	app.Run(iris.Addr(ip + ":" + port))
 }
