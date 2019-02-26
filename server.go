@@ -84,7 +84,7 @@ func initApp() *iris.Application {
 func main() {
 	cfg, err := goconfig.LoadConfigFile("config.ini")
 	if err != nil {
-		fmt.Println("读取配置文件失败")
+		fmt.Println("读取配置文件失败[config.ini]")
 		return
 	}
 	port, _ := cfg.GetValue(goconfig.DEFAULT_SECTION, "port")
