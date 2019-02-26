@@ -31,7 +31,7 @@ func control(ctx iris.Context) {
 
 func loginRequired(ctx iris.Context) {
 	if auth, _ := sess.Start(ctx).GetBoolean("authenticated"); !auth {
-		ctx.Redirect("/login")
+		ctx.JSON(iris.Map{"message": "认证过期，请重新登录", "status": "error"})
 	} else {
 		ctx.Next()
 	}

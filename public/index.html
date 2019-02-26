@@ -77,6 +77,20 @@
               $.ajax({
                 url: '/api/control',
                 method: 'post'
+              }).then(function (data) {
+                if (data.status === 'error') {
+                  bootbox.dialog({
+                    message: data.message,
+                    buttons: {
+                      confirm: {
+                        label: '确定',
+                        callback: function () {
+                          window.location.href = '/login';
+                        }
+                      }
+                    }
+                  });
+                }
               });
             }
           }
